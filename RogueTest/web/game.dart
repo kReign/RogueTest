@@ -14,7 +14,6 @@ class Game {
   num dt = 0.0;
 
   Board board;
-  Camera camera;
 
   void init() {
     canvas = querySelector("#mainCanvas");
@@ -24,7 +23,6 @@ class Game {
     width = canvas.width;
 
     board = new Board(canvas);
-    camera = new Camera();
   }
 
   void GameLoop(newTime) {
@@ -47,7 +45,7 @@ class Game {
 		ctx.fillStyle = "#FFFFFF";
   	ctx.fillRect(0, 0, width, height);
 
-		board.Draw(ctx, camera.pos);
+		board.Draw(ctx);
 
     ctx.fillStyle = "#000000";
     ctx.fillText((1/dt).toString(), 10, 10);
