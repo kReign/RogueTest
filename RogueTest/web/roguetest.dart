@@ -7,6 +7,5 @@ void main() {
   
   game.init();
   
-  
   window.animationFrame.then(game.GameLoop);
 }
