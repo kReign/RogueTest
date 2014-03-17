@@ -1,6 +1,6 @@
 import 'dart:html';
 import 'board.dart';
-import 'camera.dart';
+import 'input.dart';
 
 class Game {
 
@@ -23,32 +23,35 @@ class Game {
     width = canvas.width;
 
     board = new Board(canvas);
+    Input.init();
   }
 
-  void GameLoop(newTime) {
+  void gameLoop(newTime) {
 
     dt = (newTime - elapsedTime) / 1000;
     elapsedTime = newTime;
 
-		Update(dt);
-		Draw();
+		update(dt);
+		draw();
 
-    window.animationFrame.then(GameLoop);
+    window.animationFrame.then(gameLoop);
   }
 
-	void Update(double dt) {
-		board.Update(dt);
+	void update(double dt) {
+		board.update(dt);
 	}
 
-	void Draw() {
+	void draw() {
 
 		ctx.fillStyle = "#FFFFFF";
   	ctx.fillRect(0, 0, width, height);
 
-		board.Draw(ctx);
+		board.draw(ctx);
 
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#FFFFFF";
     ctx.fillText((1/dt).toString(), 10, 10);
+    
+    ctx.fillText((Input.isPressed(KeyCode.E).toString()), 10, 20);
 
 	}
 

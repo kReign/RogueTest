@@ -3,44 +3,58 @@ library board;
 import 'dart:html';
 import 'game_object.dart';
 import 'position.dart';
-import 'sprite.dart';
+import 'comps/components.dart';
+import 'tile.dart';
 import 'camera.dart';
 
 class Board {
 
-  static const num tileWidth = 32;
-  static const num tileHeight = 32;
+  static num tileWidth = 32;
+  static num tileHeight = 32;
+  
+  static bool creaturesCanMove = false;
+
+  Map<int, Tile> tiles;
 
   List<List<int>> currentMap;
-  int curMapWidth;
-  int curMapHeight;
+  static int curMapWidth = 10;
+  static int curMapHeight = 10;
+  
+  int curScreenWidth;
+  int curScreenHeight;
 
-  List<GameObject> objects;
-
-	Sprite player = new Sprite("player", Board.tileWidth, Board.tileHeight, 2);
-	Sprite ghost = new Sprite("ghost", Board.tileWidth, Board.tileHeight, 2, animDelay:0.5);
-	Sprite grass = new Sprite("grass", Board.tileWidth, Board.tileHeight, 1);
+  GameObject player = new GameObject("player", new Position.Zero());
+  static List<GameObject> objects = new List<GameObject>();
 
 	Camera camera = new Camera();
 
   Board(CanvasElement canvas) {
 
     // ~/ is truncating division
-    curMapWidth = canvas.width~/Board.tileWidth;
-    curMapHeight = canvas.height~/Board.tileHeight;
+    curScreenWidth = canvas.width~/Board.tileWidth;
+    curScreenHeight = canvas.height~/Board.tileHeight;
 
-    currentMap = new List(curMapHeight);
-    currentMap.forEach((e) {
-      e = new List(curMapWidth);
-      e.forEach((f) {
-        f = 1;
-      });
-    });
+    tiles = new Map<int, Tile>();
+    currentMap = new List<List<int>>(curMapWidth);
 
+    for(int i = 0; i < curMapWidth; i++) {
+      
+      currentMap[i] = new List<int>(curMapHeight);
+      
+      for(int j = 0; j < curMapHeight; j++) {
+        currentMap[i][j] = 1;
+        tiles.putIfAbsent(currentMap[i][j], () => new Tile(currentMap[i][j], Board.tileWidth, Board.tileHeight));
+      }
+    }
+    
+    objects.add(new GameObject("ghost", new Position(5, 5)));
+    player.addComponent("Player_Move", new Player_Move(player));
+    
+    camera.target = player;
+    
   }
 
-  void Load(String mapName) {
-
+  void load(String mapName) {
   }
 
   /*
@@ -51,36 +65,60 @@ class Board {
    *
    *
    */
+  
+  
 
-  bool IsOccupied(Position p) {
+  static bool isOccupied(Position p) {
 
+    objects.forEach((e) {
+      if (e.position.x == p.x && e.position.y == p.y) {
+        //if object takes up space
+        return true;
+      }
+    });
 
     return false;
   }
-
-  void Update(double dt) {
-		ghost.Update(dt);
-		camera.CenterOn(new Position.Zero(), curMapWidth, curMapHeight);
+  
+  static bool isOpen(Position p) {
+    bool open = true;
+    
+    if(isOccupied(p) || p.x < 0 || p.y < 0 || p.x >= curMapWidth || p.y >= curMapHeight) {
+      open = false;
+    }
+    
+    return open;
+    
   }
 
-  void Draw(CanvasRenderingContext2D ctx) {
+  void update(double dt) {
+		//camera.centerOn(new Position(5, 20), curMapWidth, curMapHeight);
+    
+    player.update(dt);
+    
+    objects.forEach((e) {
+      e.update(dt);
+    });
+    
+    camera.update(curScreenWidth, curScreenHeight);
+    
+    
+  }
 
-    ctx.fillStyle = "#00FF00";
+  void draw(CanvasRenderingContext2D ctx) {
 
     for( int i = 0; i < curMapWidth; i++ ) {
       for( int j = 0; j < curMapHeight; j++ ) {
-
-        /*ctx.fillRect((i - cam.x)*Board.tileWidth,
-                     (j - cam.y)*Board.tileHeight,
-                     Board.tileWidth,
-                     Board.tileHeight);*/
-
-				grass.Draw(ctx, (i - camera.x)*Board.tileWidth, (j - camera.y)*Board.tileHeight, camera);
+        
+        tiles[currentMap[i][j]].draw(ctx, new Position(i, j), camera);
       }
     }
-
-		player.Draw(ctx, 0, 0, camera);
-		ghost.Draw(ctx, 5*Board.tileWidth, 5*Board.tileHeight, camera);
+    
+    player.draw(ctx, camera);
+    objects.forEach((e) {
+      e.draw(ctx, camera);
+    });
+    
   }
 
 }

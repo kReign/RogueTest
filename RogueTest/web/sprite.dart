@@ -1,6 +1,7 @@
 library sprite;
 
 import 'dart:html';
+import 'position.dart';
 
 class Sprite {
 
@@ -16,44 +17,44 @@ class Sprite {
 
   Sprite(this.name, this.width, this.height, this.numFrames, {animDelay, image}) {
     if(image != null) {
-      this.img = image;
+      img = image;
     }
     else {
-      this.img = new ImageElement(src:"media/img/$name.png");
+      img = new ImageElement(src:"media/img/$name.png");
     }
 
     img.onLoad.listen((e) {
-      this.loaded = true;
+      loaded = true;
     });
 
-    this.currentFrame = 0;
+    currentFrame = 0;
   }
 
-  Update(double dt) {
+  update(double dt) {
 
-    if(this.numFrames > 1) {
+    if(numFrames > 1) {
 
-      this.delayCounter += dt;
+      delayCounter += dt;
 
-      if(this.delayCounter >= this.animDelay) {
+      if(delayCounter >= animDelay) {
 
-        this.currentFrame += 1;
-        if(this.currentFrame == this.numFrames) {
-          this.currentFrame = 0;
+        currentFrame += 1;
+        if(currentFrame == numFrames) {
+          currentFrame = 0;
         }
-        this.delayCounter = 0.0;
+        delayCounter = 0.0;
       }
     }
   }
 
-  Draw(CanvasRenderingContext2D ctx, x, y, camera) {
+  draw(CanvasRenderingContext2D ctx, Position pos) {
 
-    if(this.loaded) {
-      if(this.numFrames > 1) {
-        ctx.drawImageScaledFromSource(this.img, (this.width*this.currentFrame), 0, this.width, this.height, x, y, this.width, this.height);
+    if(loaded) {
+      if(numFrames > 1) {
+        ctx.drawImageScaledFromSource(img, (width*currentFrame), 0, width, height, pos.x, pos.y, width, height);
       }
       else {
-        ctx.drawImage(this.img, x-camera.x, y-camera.y);
+        ctx.drawImage(img, pos.x, pos.y);
       }
     }
   }
