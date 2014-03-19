@@ -1,0 +1,12 @@
+{
+  "player":
+  {
+    "numFrames":1
+  }
+  "ghost":
+  {
+    "numFrames":2
+  }
+}
+  
+  

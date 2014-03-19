@@ -5,6 +5,8 @@ import 'board.dart';
 import 'position.dart';
 import 'sprite.dart';
 import 'camera.dart';
+import 'object_data.dart' as od;
+import 'dart:convert';
 import 'comps/components.dart';
 
 class GameObject {
@@ -14,9 +16,14 @@ class GameObject {
   String name;
   
   Map<String, Component> components = new Map<String, Component>();
+  static Map objectData = JSON.decode(od.objectData);
+  
+  static void init() {
+    print(objectData);
+  }
   
   GameObject(this.name, this.position) {
-    sprite = new Sprite(name, 32, 32, 2);
+    sprite = new Sprite(name, 32, 32, objectData[this.name]["numFrames"]);
   }
   
   Component getComponent(String comp) => components[comp];

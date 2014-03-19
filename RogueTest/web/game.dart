@@ -1,6 +1,7 @@
 import 'dart:html';
 import 'board.dart';
 import 'input.dart';
+import 'game_object.dart';
 
 class Game {
 
@@ -24,6 +25,7 @@ class Game {
 
     board = new Board(canvas);
     Input.init();
+    GameObject.init();
   }
 
   void gameLoop(newTime) {
