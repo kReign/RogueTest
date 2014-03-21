@@ -10,26 +10,32 @@ import 'dart:convert';
 import 'comps/components.dart';
 
 class GameObject {
-  Position position;
-  Sprite sprite;
-  
-  String name;
-  
-  Map<String, Component> components = new Map<String, Component>();
   static Map objectData = JSON.decode(od.objectData);
   
-  static void init() {
-    print(objectData);
-  }
+  Position position;
+  Sprite sprite;
+  String name;
+  
+  bool occupiesSpace;
+  
+  Map<String, Component> components = new Map<String, Component>();
   
   GameObject(this.name, this.position) {
-    sprite = new Sprite(name, 32, 32, objectData[this.name]["numFrames"]);
+    sprite = new Sprite(name, Board.tileWidth, Board.tileHeight, objectData[this.name]["numFrames"]);
+    occupiesSpace = objectData[this.name]["occupiesSpace"];
+    
+    if(objectData[this.name]["components"]!=null) {
+      objectData[this.name]["components"].forEach((e) {
+        addComponent(e);
+      });
+    }
+    
   }
   
   Component getComponent(String comp) => components[comp];
   
-  void addComponent(String name, Component c) {
-    components.putIfAbsent(name, () => c);
+  void addComponent(String name) {
+    components.putIfAbsent(name, () => Component.comps[name](this));
   }
   
   void update(double dt) {

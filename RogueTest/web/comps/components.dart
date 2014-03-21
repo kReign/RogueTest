@@ -12,9 +12,11 @@ abstract class Component {
   
   GameObject parent;
   
+  static Map<String, Function> comps = new Map<String, Function>();
+  
   void update(double dt);
   
-  static void name() {
-    
+  static void init() {
+    comps["Player_Move"] = (GameObject g) => new Player_Move(g);
   }
 }

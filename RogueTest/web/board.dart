@@ -17,13 +17,13 @@ class Board {
   Map<int, Tile> tiles;
 
   List<List<int>> currentMap;
-  static int curMapWidth = 10;
+  static int curMapWidth = 20;
   static int curMapHeight = 10;
   
   int curScreenWidth;
   int curScreenHeight;
 
-  GameObject player = new GameObject("player", new Position.Zero());
+  static GameObject player = new GameObject("player", new Position.Zero());
   static List<GameObject> objects = new List<GameObject>();
 
 	Camera camera = new Camera();
@@ -48,7 +48,7 @@ class Board {
     }
     
     objects.add(new GameObject("ghost", new Position(5, 5)));
-    player.addComponent("Player_Move", new Player_Move(player));
+    //player.addComponent("Player_Move");
     
     camera.target = player;
     
@@ -69,15 +69,18 @@ class Board {
   
 
   static bool isOccupied(Position p) {
+    
+    bool occupied = false;
 
     objects.forEach((e) {
       if (e.position.x == p.x && e.position.y == p.y) {
-        //if object takes up space
-        return true;
+        if(e.occupiesSpace) {
+          occupied = true;
+        }
       }
     });
 
-    return false;
+    return occupied;
   }
   
   static bool isOpen(Position p) {
