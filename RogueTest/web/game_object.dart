@@ -17,12 +17,14 @@ class GameObject {
   String name;
   
   bool occupiesSpace;
+  bool transparent;
   
   Map<String, Component> components = new Map<String, Component>();
   
   GameObject(this.name, this.position) {
-    sprite = new Sprite(name, Board.tileWidth, Board.tileHeight, objectData[this.name]["numFrames"]);
+    sprite = new Sprite(name, Board.tileWidth, Board.tileHeight);
     occupiesSpace = objectData[this.name]["occupiesSpace"];
+    transparent = objectData[this.name]["transparent"];
     
     if(objectData[this.name]["components"]!=null) {
       objectData[this.name]["components"].forEach((e) {
@@ -47,7 +49,11 @@ class GameObject {
   }
   
   void draw(CanvasRenderingContext2D ctx, Camera camera) {
-    sprite.draw(ctx, new Position((position.x - camera.x)*Board.tileWidth, (position.y - camera.y)*Board.tileHeight));
+    ctx.globalAlpha = (transparent) ? 0.5 : 1.0;
+    
+    sprite.draw(ctx, new Position((position.x - camera.x)*Board.tileWidth, 
+                                  (position.y - camera.y)*Board.tileHeight));
+    ctx.globalAlpha = 1.0;
   }
   
 }

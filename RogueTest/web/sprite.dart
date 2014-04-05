@@ -15,7 +15,7 @@ class Sprite {
   double animDelay = .5;
   bool loaded = false;
 
-  Sprite(this.name, this.width, this.height, this.numFrames, {animDelay, image}) {
+  Sprite(this.name, this.width, this.height, {animDelay, image}) {
     if(image != null) {
       img = image;
     }
@@ -25,6 +25,7 @@ class Sprite {
 
     img.onLoad.listen((e) {
       loaded = true;
+      numFrames = img.width~/width;
     });
 
     currentFrame = 0;

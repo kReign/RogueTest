@@ -3,7 +3,7 @@ library board;
 import 'dart:html';
 import 'game_object.dart';
 import 'position.dart';
-import 'comps/components.dart';
+import 'map_data.dart';
 import 'tile.dart';
 import 'camera.dart';
 
@@ -14,17 +14,17 @@ class Board {
   
   static bool creaturesCanMove = false;
 
-  Map<int, Tile> tiles;
+  static Map<int, Tile> tiles;
 
-  List<List<int>> currentMap;
-  static int curMapWidth = 20;
-  static int curMapHeight = 10;
+  static List<List<int>> currentMap;
+  static int curMapWidth = 10;
+  static int curMapHeight = 5;
   
   int curScreenWidth;
   int curScreenHeight;
 
   static GameObject player = new GameObject("player", new Position.Zero());
-  static List<GameObject> objects = new List<GameObject>();
+  static List<GameObject> creatures = new List<GameObject>();
 
 	Camera camera = new Camera();
 
@@ -35,20 +35,26 @@ class Board {
     curScreenHeight = canvas.height~/Board.tileHeight;
 
     tiles = new Map<int, Tile>();
-    currentMap = new List<List<int>>(curMapWidth);
+    currentMap = new List<List<int>>(curMapHeight);
+    
+    int count = 0;
 
-    for(int i = 0; i < curMapWidth; i++) {
+    for(int i = 0; i < curMapHeight; i++) {
       
-      currentMap[i] = new List<int>(curMapHeight);
+      currentMap[i] = new List<int>(curMapWidth);
       
-      for(int j = 0; j < curMapHeight; j++) {
-        currentMap[i][j] = 1;
+      for(int j = 0; j < curMapWidth; j++) {
+        
+        currentMap[i][j] = int.parse(map_one[count]);
+        //print(map_one[count] + " which should be equal to " + currentMap[i][j].toString());
+        count++;
         tiles.putIfAbsent(currentMap[i][j], () => new Tile(currentMap[i][j], Board.tileWidth, Board.tileHeight));
+        //print(currentMap[i][j].toString() + " which is " + tiles[currentMap[i][j]].name());
       }
+      print(currentMap[i]);
     }
     
-    objects.add(new GameObject("ghost", new Position(5, 5)));
-    //player.addComponent("Player_Move");
+    creatures.add(new GameObject("ghost", new Position(3, 3)));
     
     camera.target = player;
     
@@ -72,7 +78,7 @@ class Board {
     
     bool occupied = false;
 
-    objects.forEach((e) {
+    creatures.forEach((e) {
       if (e.position.x == p.x && e.position.y == p.y) {
         if(e.occupiesSpace) {
           occupied = true;
@@ -86,7 +92,13 @@ class Board {
   static bool isOpen(Position p) {
     bool open = true;
     
-    if(isOccupied(p) || p.x < 0 || p.y < 0 || p.x >= curMapWidth || p.y >= curMapHeight) {
+    if(isOccupied(p) 
+        || p.x < 0 
+        || p.y < 0 
+        || p.x >= curMapWidth 
+        || p.y >= curMapHeight
+        || !tiles[currentMap[p.y][p.x]].isTraversable()) {
+      
       open = false;
     }
     
@@ -99,26 +111,30 @@ class Board {
     
     player.update(dt);
     
-    objects.forEach((e) {
+    creatures.forEach((e) {
       e.update(dt);
     });
     
-    camera.update(curScreenWidth, curScreenHeight);
+    tiles.forEach((k, v) {
+      v.update(dt);
+    });
     
+    camera.update(curScreenWidth, curScreenHeight);
     
   }
 
   void draw(CanvasRenderingContext2D ctx) {
 
-    for( int i = 0; i < curMapWidth; i++ ) {
-      for( int j = 0; j < curMapHeight; j++ ) {
+    for( int i = 0; i < curMapHeight; i++ ) {
+      for( int j = 0; j < curMapWidth; j++ ) {
         
-        tiles[currentMap[i][j]].draw(ctx, new Position(i, j), camera);
+        tiles[currentMap[i][j]].draw(ctx, new Position(j, i), camera);
+        //print("drawing " + currentMap[i][j].toString() + " at " + i.toString() + ", " + j.toString());
       }
     }
     
     player.draw(ctx, camera);
-    objects.forEach((e) {
+    creatures.forEach((e) {
       e.draw(ctx, camera);
     });
     

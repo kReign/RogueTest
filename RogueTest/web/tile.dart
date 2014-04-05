@@ -7,19 +7,25 @@ import 'position.dart';
 
 class Tile {
 
-  static Map<int, String> tileNames = {
-    0 : "dirt",
-    1 : "grass",
-    2 : "other"
+  static Map _tiles = {
+    0 : {"name":"dirt", "traversable":true},
+    1 : {"name":"grass", "traversable":true},
+    2 : {"name":"water", "traversable":false},
   };
 
   int type;
   Sprite sprite;
+  
+  String name() {
+    return _tiles[type]["name"];
+  }
 
   Tile(this.type, tileWidth, tileHeight) {
 
-    sprite = new Sprite(Tile.tileNames[type], tileWidth, tileHeight, 1);
+    sprite = new Sprite(_tiles[type]["name"], tileWidth, tileHeight);
   }
+  
+  bool isTraversable() => _tiles[type]["traversable"];
 
   void update(dt) {
     sprite.update(dt);

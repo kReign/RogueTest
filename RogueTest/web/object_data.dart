@@ -4,17 +4,17 @@ String objectData =
 """
   {
     "player": {
-      "numFrames":1,
       "occupiesSpace":true,
       "components": [
         "Player_Move"
-      ]
+      ],
+      "transparent":false
     },
     "ghost": {
-      "numFrames":2,
       "occupiesSpace":true,
       "components": [
-      ]
+      ],
+      "transparent":true
     }
   }
 """;
