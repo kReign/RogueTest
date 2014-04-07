@@ -26,7 +26,9 @@ class Board {
   static GameObject player = new GameObject("player", new Position.Zero());
   static List<GameObject> creatures = new List<GameObject>();
 
-	Camera camera = new Camera();
+	static Camera camera = new Camera();
+	
+	static Position mouseHover = new Position.Zero();
 
   Board(CanvasElement canvas) {
 
@@ -54,7 +56,7 @@ class Board {
       print(currentMap[i]);
     }
     
-    creatures.add(new GameObject("ghost", new Position(3, 3)));
+    creatures.add(new GameObject("ghost", new Position(4, 3)));
     
     camera.target = player;
     
@@ -105,6 +107,12 @@ class Board {
     return open;
     
   }
+  
+  static void moveMouse(int x, int y) {
+    mouseHover.x = (x~/tileWidth) + camera.pos.x;
+    mouseHover.y = (y~/tileHeight) + camera.pos.y;
+    //print(((x~/tileWidth) + camera.pos.x).toString() + " " + ((y~/tileHeight) + camera.pos.y).toString());
+  }
 
   void update(double dt) {
 		//camera.centerOn(new Position(5, 20), curMapWidth, curMapHeight);
@@ -137,6 +145,8 @@ class Board {
     creatures.forEach((e) {
       e.draw(ctx, camera);
     });
+    
+    tiles[1].draw(ctx, mouseHover, camera);
     
   }
 
