@@ -129,7 +129,7 @@ class Board {
       for( int j = 0; j < curMapWidth; j++ ) {
         
         tiles[currentMap[i][j]].draw(ctx, new Position(j, i), camera);
-        //print("drawing " + currentMap[i][j].toString() + " at " + i.toString() + ", " + j.toString());
+        print("drawing " + currentMap[i][j].toString() + " at " + i.toString() + ", " + j.toString());
       }
     }
     
