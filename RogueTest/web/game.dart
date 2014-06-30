@@ -6,8 +6,8 @@ import 'game_object.dart';
 
 class Game {
 
-  CanvasElement canvas;
-  CanvasRenderingContext2D ctx;
+  static CanvasElement canvas;
+  static CanvasRenderingContext2D ctx;
 
   int height;
   int width;
@@ -51,10 +51,8 @@ class Game {
 
 		board.draw(ctx);
 
-    ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#000000";
     ctx.fillText((1/dt).toString(), 10, 10);
-    
-    ctx.fillText((Input.isPressed(KeyCode.E).toString()), 10, 20);
 
 	}
 

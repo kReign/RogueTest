@@ -1,6 +1,8 @@
 library input;
 
 import 'dart:html';
+import 'game.dart';
+import 'board.dart';
 
 class Input {
   
@@ -21,6 +23,10 @@ class Input {
       _keys.remove(e.keyCode);
       _toRemove.remove(e.keyCode);
     });
+    
+    Game.canvas.onMouseMove.listen((MouseEvent e) {
+      Board.moveMouse(e.offset.x, e.offset.y);
+    });
   }
   
   // A key is pressed if it has been pressed by user and not yet checked.
@@ -38,6 +44,8 @@ class Input {
     return false;
     
   }
+  
+  
 
   /*static bool isAnyPressed(List<KeyCode> keys, [bool clear = false]) {
     bool ret = false;
